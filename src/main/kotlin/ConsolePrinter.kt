@@ -3,6 +3,7 @@ import kotlinx.coroutines.runBlocking
 
 class ConsolePrinter {
     fun printStart() {
+        println()
         println(" _____ ______   ________  ___      ___ ___  _______           ________  ________  _______   ________   _________   \n" +
                 "|\\   _ \\  _   \\|\\   __  \\|\\  \\    /  /|\\  \\|\\  ___ \\         |\\   __  \\|\\   ____\\|\\  ___ \\ |\\   ___  \\|\\___   ___\\ \n" +
                 "\\ \\  \\\\\\__\\ \\  \\ \\  \\|\\  \\ \\  \\  /  / | \\  \\ \\   __/|        \\ \\  \\|\\  \\ \\  \\___|\\ \\   __/|\\ \\  \\\\ \\  \\|___ \\  \\_| \n" +
@@ -10,6 +11,7 @@ class ConsolePrinter {
                 "  \\ \\  \\    \\ \\  \\ \\  \\\\\\  \\ \\    / /   \\ \\  \\ \\  \\_|\\ \\       \\ \\  \\ \\  \\ \\  \\|\\  \\ \\  \\_|\\ \\ \\  \\\\ \\  \\   \\ \\  \\ \n" +
                 "   \\ \\__\\    \\ \\__\\ \\_______\\ \\__/ /     \\ \\__\\ \\_______\\       \\ \\__\\ \\__\\ \\_______\\ \\_______\\ \\__\\\\ \\__\\   \\ \\__\\\n" +
                 "    \\|__|     \\|__|\\|_______|\\|__|/       \\|__|\\|_______|        \\|__|\\|__|\\|_______|\\|_______|\\|__| \\|__|    \\|__|")
+        println()
     }
 
     fun printEnd() {
@@ -23,7 +25,25 @@ class ConsolePrinter {
     }
 
     fun printHelp() {
-        println("help")
+        println("=-=-=-=-=-=-=-=-= Prompt Syntax =-=-=-=-=-=-=-=-=")
+        println()
+        println("\"Recommend me {n} {genre} movies from {year} year with minimum rating of {rating}\"")
+        println("Where n - number of movies, genre - genre (check below), year - integer year of production, rating - rating on TMDB (0.0-10.0)")
+        println("Example:")
+        println("Recommend me 2 Action movies from 2015 year with minimum rating of 7.5")
+        println("If You don't want to specify genre, year or rating you can type 'any' instead of actual value")
+        println("For example:")
+        println("Recommend me 4 any movies from any year with minimum rating of 5")
+        println()
+        println("If you want one movie you can type instead:")
+        println("\"Recommend me {genre} movie from {year} year with minimum rating of {rating}\"")
+        println()
+        println("=-=-=-=-=-=-=-=-= Error Handling =-=-=-=-=-=-=-=-=")
+        println()
+        println("If your prompt is invalid, You will have to type values manually")
+        println()
+        println("=-=-=-=-=-= List of all possible genres =-=-=-=-=-=")
+        println()
     }
 
     fun type(prompt: String) = runBlocking {
