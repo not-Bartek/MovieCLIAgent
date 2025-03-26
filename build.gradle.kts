@@ -19,6 +19,7 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:2.0.0") // For Content Negotiation plugin
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.0") // For JSON serialization
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4") // kotlin coroutines
     implementation("io.ktor:ktor-client-logging:2.0.0") // For Logging plugin
     implementation("io.github.cdimascio:dotenv-kotlin:6.2.2") // For loading .env file
     testImplementation(kotlin("test"))
