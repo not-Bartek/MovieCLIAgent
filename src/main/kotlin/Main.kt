@@ -164,7 +164,7 @@ class Main {
 
     }
     private fun checkCorrectness(prompt: String): Boolean {
-        val regex = Regex("""(?i)Recommend me (\d+)?\s?((?:\w+\s?){1,2}) movies? from (\d{4}|any)( year)? with minimum rating of (\d+(\.\d+)?|any)""")
+        val regex = Regex("""(?i)Recommend me (\d+)?\s?((?:\w+\s?){1,2}) movies? from (\d{4}|any)( year)? with minimum rating of (\d+(\.\d+)?|any)(\n)?""")
         return regex.matches(prompt)
     }
 
@@ -185,7 +185,7 @@ class Main {
         while(true) {
             if(start == 1) {
                 print("Movie Agent: ")
-                printer.type("Hi! I'm your movie recomendadion agent. Ask me for a recomendation, type 'help' to see prompt syntax or type 'exit' to quit")
+                printer.type("Hi! I'm Your movie recomendadion agent. Ask me for a recomendation, type 'help' to see prompt syntax or type 'exit' to quit")
                 start = 0
             } else if (helping == 1) {
                 print("Movie Agent: ")
@@ -203,9 +203,14 @@ class Main {
                 print("Movie Agent: ")
                 printer.type("What can I do for You?")
             }
-
+            var read_prompt: String
             print("\nUser: ")
-            val read_prompt = scanner.nextLine()
+            if (scanner.hasNextLine()) {
+                read_prompt = scanner.nextLine()
+            } else {
+                read_prompt = ""
+            }
+
             val prompt: String = read_prompt ?: ""
             print("Movie Agent: ")
             if(prompt == "exit") {
@@ -236,12 +241,14 @@ class Main {
                             throw Exception("Invalid prompt")
                         }
                         val genre = genreMap[genre_string]
-
+                        println("$genre, $year, $minRating, $maxResults")
+                        //! errors when min Rating is too high - when there is no movie which is ok for rating 8,9,10 doesn not work for 11 work
                         getRecommendations(printer, client, API_KEY, genre, year, minRating, maxResults)
                         count++
                         responded = 1
                     } catch (e: Exception) {
                         try {
+                            throw Exception("Idk if this part is good or no")
                             printer.type("Invalid prompt. Type values Manually. Enter genre (or leave it blank if you want any movie)")
                             println()
                             print("User: ")

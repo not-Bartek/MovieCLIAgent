@@ -38,3 +38,6 @@ application {
 kotlin {
     jvmToolchain(21)
 }
+tasks.getByName("run", JavaExec::class) {
+    standardInput = System.`in`
+} //bug fix with terminal not waiting for user
