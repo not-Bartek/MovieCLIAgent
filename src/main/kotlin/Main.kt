@@ -85,7 +85,7 @@ class Main {
             val json = response.body?.string() ?: throw IOException("Empty response body")
             val genres = Json.decodeFromString<Genres>(json)
             genres.genres.forEach() {
-                if(it.id == 37) {//last element
+                if(it.id == 37) {
                     println(it.name)
                 } else if(it.name=="Horror"){
                     println("${it.name},")
@@ -119,14 +119,10 @@ class Main {
             if (jsonString == null) {
                 printer.type("Cannot find any movie meeting your requirements")
             } else {
-                //println("json decoding should be fine")
-                //println(jsonString)
-                //println(jsonString.length)
                 val json = Json {
                     coerceInputValues=true
                 }
                 val recommendations = json.decodeFromString<MovieRecommendation>(jsonString)
-                //println("this we don't see")
                 if(recommendations.results.isEmpty()) {
 
                     printer.type("Cannot find any movie meeting your requirements")
@@ -135,7 +131,6 @@ class Main {
                 } else {
                     val genreString = keyOf(genreMap, genre) ?: "any"
                     val yearString = year ?: "any"
-                    //println("should be fine")
                     val these = if(maxResults == 1) "this" else "these"
                     val film = if(maxResults == 1) "movie" else "movies"
                     printer.type("Okay, I recommend you $these $maxResults $genreString $film from $yearString year: ")
@@ -215,15 +210,8 @@ class Main {
                 print("Movie Agent: ")
                 printer.type("What can I do for You?")
             }
-            var read_prompt: String
             print("\nUser: ")
-            if (scanner.hasNextLine()) {
-                read_prompt = scanner.nextLine()
-            } else {
-                read_prompt = ""
-            }
-
-            val prompt: String = read_prompt ?: ""
+            val prompt = if(scanner.hasNextLine()) scanner.nextLine() else ""
             print("Movie Agent: ")
             if(prompt == "exit") {
                 printer.type("Goodbye! [end credits]\n")
