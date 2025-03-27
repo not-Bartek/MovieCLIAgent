@@ -26,7 +26,7 @@ data class Results(
     val original_title: String,
     val overview: String,
     val popularity: Double,
-    val poster_path: String,
+    val poster_path: String?,
     val release_date: String,
     val title: String,
     val video: Boolean,
@@ -113,27 +113,39 @@ class Main {
             .build()
 
         client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) throw IOException("Unexpected code $response")
+            if (!response.isSuccessful)  println("Unexpected code $response")
 
-            val json = response.body?.string() ?: throw IOException("Empty response body")
-            val recommendations = Json.decodeFromString<MovieRecommendation>(json)
-
-            if(recommendations.results.isEmpty()) {
-
+            val jsonString = response.body?.string()
+            if (jsonString == null) {
                 printer.type("Cannot find any movie meeting your requirements")
-                println()
-
             } else {
-                val these = if(maxResults == 1) "this" else "these"
-                val film = if(maxResults == 1) "movie" else "movies"
-                printer.type("Okay, I recommend you $these $maxResults ${keyOf(genreMap, genre)} $film from $year year: ")
-                println()
-                recommendations.results.take(maxResults).forEach { movie ->
-                    printer.type("Title: ${movie.title}, Release Date: ${movie.release_date}, Rating: ${movie.vote_average}")
+                //println("json decoding should be fine")
+                //println(jsonString)
+                //println(jsonString.length)
+                val json = Json {
+                    coerceInputValues=true
+                }
+                val recommendations = json.decodeFromString<MovieRecommendation>(jsonString)
+                //println("this we don't see")
+                if(recommendations.results.isEmpty()) {
+
+                    printer.type("Cannot find any movie meeting your requirements")
                     println()
+
+                } else {
+                    val genreString = keyOf(genreMap, genre) ?: "any"
+                    val yearString = year ?: "any"
+                    //println("should be fine")
+                    val these = if(maxResults == 1) "this" else "these"
+                    val film = if(maxResults == 1) "movie" else "movies"
+                    printer.type("Okay, I recommend you $these $maxResults $genreString $film from $yearString year: ")
+                    println()
+                    recommendations.results.take(maxResults).forEach { movie ->
+                        printer.type("${movie.title} from ${movie.release_date} with rating ${movie.vote_average}")
+                        println()
+                    }
                 }
             }
-
         }
     }
 
@@ -164,7 +176,7 @@ class Main {
 
     }
     private fun checkCorrectness(prompt: String): Boolean {
-        val regex = Regex("""(?i)Recommend me (\d+)?\s?((?:\w+\s?){1,2}) movies? from (\d{4}|any)( year)? with minimum rating of (\d+(\.\d+)?|any)(\n)?""")
+        val regex = Regex("""(?i)Recommend me (\d+)?\s?((?:\w+\s?){1,2})\s?movies? from (\d{4}|any)( year)? with minimum rating of (\d+(\.\d+)?|any)(\n)?""")
         return regex.matches(prompt)
     }
 
@@ -227,9 +239,9 @@ class Main {
                 println()
                 helping = 1
             } else {
-                if(count < 39)
+                if (count < 39) {
                     try {
-                        if(prompt == "") throw Exception("Empty prompt")
+                        if (prompt == "") throw Exception("Empty prompt")
                         val genre_string = getGenre(prompt)
                         val year = getYear(prompt)
                         val minRating = getRating(prompt)
@@ -238,53 +250,23 @@ class Main {
 
 
                         if (!checkCorrectness(prompt)) {
+                            //print("not working")
                             throw Exception("Invalid prompt")
                         }
                         val genre = genreMap[genre_string]
-                        println("$genre, $year, $minRating, $maxResults")
-                        //! errors when min Rating is too high - when there is no movie which is ok for rating 8,9,10 doesn not work for 11 work
+                        //println("$genre, $year, $minRating, $maxResults")
                         getRecommendations(printer, client, API_KEY, genre, year, minRating, maxResults)
                         count++
                         responded = 1
                     } catch (e: Exception) {
-                        try {
-                            throw Exception("Idk if this part is good or no")
-                            printer.type("Invalid prompt. Type values Manually. Enter genre (or leave it blank if you want any movie)")
-                            println()
-                            print("User: ")
-                            val genre_string = scanner.nextLine()// default to Action genre
-                            print("Movie Agent: ")
-                            printer.type("Type minimal year of production (or leave it empty if it doesn't matter)")
-                            println()
-                            print("User: ")
-                            val year = scanner.nextLine()?.toIntOrNull() // default to current year
-                            print("Movie Agent: ")
-                            printer.type("Type minimal rating (or like before leave it empty)")
-                            println()
-                            print("User: ")
-                            val minRating = scanner.nextLine()?.toDoubleOrNull() ?: 0.0 // default to 0.0
-                            print("Movie Agent: ")
-                            printer.type("Enter number of results")
-                            println()
-                            print("User: ")
-                            val maxResults = scanner.nextLine()?.toIntOrNull() ?: 3 // default to 3 results
-
-
-                            val genre = genreMap[genre_string]
-                            getRecommendations(printer, client, API_KEY, genre, year, minRating, maxResults)
-                            count++
-                            responded = 1
-                        } catch (e: Exception) {
-                            invalid = 1
-                            print("Movie Agent: ")
-                            printer.type("Invalid prompt")
-                        }
+                        //println(e)
+                        invalid = 1
+                        printer.type("Invalid prompt")
+                        println()
                     }
+                }
             }
         }
-
-
-
     }
 }
 

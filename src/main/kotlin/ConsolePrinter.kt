@@ -28,7 +28,7 @@ class ConsolePrinter {
         println("=-=-=-=-=-=-=-=-= Prompt Syntax =-=-=-=-=-=-=-=-=")
         println()
         println("\"Recommend me {n} {genre} movies from {year} year with minimum rating of {rating}\"")
-        println("Where n - number of movies, genre - genre (check below), year - integer year of production, rating - rating on TMDB (0.0-10.0)")
+        println("Where n - max number of movies, genre - genre (check below), year - integer year of production, rating - rating on TMDB (0.0-10.0)")
         println("Example:")
         println("Recommend me 2 Action movies from 2015 year with minimum rating of 7.5")
         println("If You don't want to specify genre, year or rating you can type 'any' instead of actual value")
